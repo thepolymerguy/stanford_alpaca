@@ -40,7 +40,7 @@ def encode_prompt(prompt_instructions):
     prompt += f"{idx + 2}. Instruction:"
     return prompt
 
-
+# cleans gerenated data
 def post_process_gpt3_response(num_prompt_instructions, response):
     if response is None:
         return []
@@ -106,7 +106,7 @@ def post_process_gpt3_response(num_prompt_instructions, response):
 def find_word_in_string(w, s):
     return re.compile(r"\b({0})\b".format(w), flags=re.IGNORECASE).search(s)
 
-
+# generates instrustions and outputs from seed (human input) using open ai
 def generate_instruction_following_data(
     output_dir="./",
     seed_tasks_path="./seed_tasks.jsonl",
@@ -183,6 +183,7 @@ def generate_instruction_following_data(
         keep = 0
         for instruction_data_entry in instruction_data:
             # computing similarity with the pre-tokenzied instructions
+            # filters out the ones that are too similar -> so diverse dataset
             new_instruction_tokens = scorer._tokenizer.tokenize(instruction_data_entry["instruction"])
             with Pool(num_cpus) as p:
                 rouge_scores = p.map(
