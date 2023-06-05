@@ -126,6 +126,7 @@ def preprocess(
 
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
+    # input and outpu
 
     def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
         super(SupervisedDataset, self).__init__()
@@ -156,7 +157,8 @@ class SupervisedDataset(Dataset):
 @dataclass
 class DataCollatorForSupervisedDataset(object):
     """Collate examples for supervised fine-tuning."""
-
+    # takes care of padding, makes sure everything is the same length
+    # no long or short sequences etc
     tokenizer: transformers.PreTrainedTokenizer
 
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
@@ -212,6 +214,7 @@ def train():
     )
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
+    # hugging face trainer class
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
     trainer.train()
     trainer.save_state()
